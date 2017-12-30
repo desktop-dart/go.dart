@@ -1,22 +1,28 @@
 # go
 
-A library for Dart developers.
+Simplest API to multi process.
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+# Parallelize a task
 
-## Usage
+```dart
+import 'package:go/go.dart';
 
-A simple usage example:
+int twice(int a) => a * 2;
 
-    import 'package:go/go.dart';
+main() async {
+  print(await go(twice, 5));
+}
+```
 
-    main() {
-      var awesome = new Awesome();
-    }
+# Convert a task to remote task
 
-## Features and bugs
+```dart
+import 'package:go/go.dart';
 
-Please file feature requests and bugs at the [issue tracker][tracker].
+int twice(int a) => a * 2;
 
-[tracker]: http://example.com/issues/replaceme
+main() async {
+  Task twiceTask = remoteTask(twice);
+  print(await twiceTask(5));
+}
+```

@@ -1,7 +1,7 @@
 name: go
-description: Simplest API to multiprocess.
-version: 0.0.1
-#homepage: https://www.example.com
+description: Simplest API to multi process.
+version: 1.0.0
+homepage: https://github.com/desktop-dart/go.dart
 author: Ravi Teja Gudapati <tejainece@gmail.com>
 
 environment:
