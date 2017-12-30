@@ -1,6 +1,5 @@
 library go.stream;
 
-import 'dart:io';
 import 'dart:async';
 import 'dart:isolate';
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
++ `goMany`
++ `goMap`
+
 ## 1.0.1
 
 + `stream`
