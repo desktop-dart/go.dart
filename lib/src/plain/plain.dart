@@ -39,4 +39,5 @@ Future<R> go<R, P>(Task<R, P> task, P param) async {
 ///       print(await twiceTask(5));  // => 10
 ///       print(await twiceTask(10)); // => 20
 ///     }
-Task<R, P> remoteTask<R, P>(Task<R, P> task) => (P params) => go(task, params);
+Task<R, P> remoteTask<R, P>(Task<R, P> task) =>
+    (P params) => go<R, P>(task, params);

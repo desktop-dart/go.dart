@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
++ `stream`
++ `remoteStream`
+
 ## 1.0.0
 
 + `go` executes the given function in another isolate and returns results

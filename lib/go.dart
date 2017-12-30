@@ -1,8 +1,5 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/// Simplest API to multi process.
 library go;
 
-export 'src/go_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/plain/plain.dart';
+export 'src/stream/stream.dart';
