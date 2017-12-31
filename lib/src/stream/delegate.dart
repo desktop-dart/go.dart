@@ -3,7 +3,7 @@ part of go.stream;
 /// Parameters to execute [task] with the [_delegate]
 class _DelegateParams<R, P> {
   /// Task to execute
-  final StreamTask<R, P> task;
+  final Task<Stream<R>, P> task;
 
   /// Parameters to the [task]
   final P params;
@@ -11,10 +11,49 @@ class _DelegateParams<R, P> {
   /// Send port used to communicate the isolate
   final SendPort port;
 
-  _DelegateParams(this.task, this.params, this.port);
+  final Encoder<P> paramEncoder;
+
+  final Decoder<P> paramDecoder;
+
+  final Encoder<R> resultEncoder;
+
+  final Decoder<R> resultDecoder;
+
+  _DelegateParams(this.task, this.params, this.port,
+      {this.paramEncoder,
+      this.paramDecoder,
+      this.resultEncoder,
+      this.resultDecoder});
+
+  static _DelegateParams<R, P> fromMap<R, P>(Map<String, dynamic> map) {
+    final Decoder<P> paramDecoder = map['paramDecoder'];
+    final rawParam = map['params'];
+    final P param = paramDecoder == null ? rawParam : paramDecoder(rawParam);
+    return new _DelegateParams<R, P>(map['task'], param, map['port'],
+        paramEncoder: map['paramEncoder'],
+        paramDecoder: paramDecoder,
+        resultEncoder: map['resultEncoder'],
+        resultDecoder: map['resultDecoder']);
+  }
+
+  Map<String, dynamic> get toMap => {
+        'task': task,
+        'params': paramEncoder == null ? params : paramEncoder(params),
+        'port': port,
+        'paramEncoder': paramEncoder,
+        'paramDecoder': paramDecoder,
+        'resultEncoder': resultEncoder,
+        'resultDecoder': resultDecoder,
+      };
 }
 
-_delegate<R, P>(_DelegateParams<R, P> params) async {
+_delegate<R, P>(Map map) async {
+  final params = _DelegateParams.fromMap<R, P>(map);
+  final Encoder<R> encoder = params.resultEncoder;
   final Stream<R> result = await params.task(params.params);
-  result.listen((R r) => params.port.send(r));
+  if (encoder == null) {
+    result.listen((R r) => params.port.send(r));
+  } else {
+    result.map(encoder).listen((Map map) => params.port.send(map));
+  }
 }

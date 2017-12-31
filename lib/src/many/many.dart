@@ -14,11 +14,19 @@ import '../plain/plain.dart';
 ///     main() async {
 ///       print(await goMany(twice, 5, 20));
 ///     }
-Future<List<R>> goMany<R, P>(Task<R, P> task, P param, int count) async {
+Future<List<R>> goMany<R, P>(Task<R, P> task, P param, int count,
+    {Encoder<P> paramEncoder,
+    Decoder<P> paramDecoder,
+    Encoder<R> resultEncoder,
+    Decoder<R> resultDecoder}) async {
   final futures = <Future<R>>[];
 
-  for(int i = 0; i < count; i++) {
-    futures.add(go(task, param));
+  for (int i = 0; i < count; i++) {
+    futures.add(go(task, param,
+        paramEncoder: paramEncoder,
+        paramDecoder: paramDecoder,
+        resultEncoder: resultEncoder,
+        resultDecoder: resultDecoder));
   }
 
   return Future.wait(futures);

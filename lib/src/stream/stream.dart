@@ -3,6 +3,8 @@ library go.stream;
 import 'dart:async';
 import 'dart:isolate';
 
+import '../plain/plain.dart';
+
 part 'delegate.dart';
 
 /// A one-shot task that takes a parameter [param] and returns result of type [R].
@@ -30,18 +32,42 @@ typedef FutureOr<Stream<R>> StreamTask<R, P>(P param);
 ///         print('Result from remote $f');
 ///       }
 ///     }
-Future<Stream<R>> stream<R, P>(StreamTask<R, P> task, P param) async {
+Future<Stream<R>> stream<R, P>(StreamTask<R, P> task, P param,
+    {Encoder<P> paramEncoder,
+    Decoder<P> paramDecoder,
+    Encoder<R> resultEncoder,
+    Decoder<R> resultDecoder}) async {
   final receivePort = new ReceivePort();
-  final isolate = await Isolate.spawn(
-      _delegate, new _DelegateParams(task, param, receivePort.sendPort));
-  final Stream<R> result = receivePort.map((d) => d as R);
+  final dParams = new _DelegateParams<R, P>(task, param, receivePort.sendPort,
+      paramEncoder: paramEncoder,
+      paramDecoder: paramDecoder,
+      resultEncoder: resultEncoder,
+      resultDecoder: resultDecoder);
+  final isolate = await Isolate.spawn(_delegate, dParams.toMap);
+
+  final controller = new StreamController<R>();
+
+  final errorReceivePort = new ReceivePort();
+  isolate.addErrorListener(errorReceivePort.sendPort);
+  errorReceivePort.listen((e) {
+    controller.addError(e);
+    receivePort.close();
+  });
+
   final exitReceivePort = new ReceivePort();
   isolate.addOnExitListener(exitReceivePort.sendPort);
   exitReceivePort.first.then((_) {
     receivePort.close();
+    errorReceivePort.close();
   });
-  // TODO Watchout for errors
-  return result;
+
+  if (resultDecoder == null) {
+    receivePort.pipe(controller);
+  } else {
+    receivePort.map((d) => resultDecoder(d)).pipe(controller);
+  }
+
+  return controller.stream;
 }
 
 /// Converts [task] to a function that executes [task] on another isolate and

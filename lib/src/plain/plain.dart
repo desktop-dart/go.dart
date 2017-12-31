@@ -18,10 +18,18 @@ typedef FutureOr<R> Task<R, P>(P param);
 ///     main() async {
 ///       print(await go(twice, 5));  // => 10
 ///     }
-Future<R> go<R, P>(Task<R, P> task, P param) async {
+Future<R> go<R, P>(Task<R, P> task, P param,
+    {Encoder<P> paramEncoder,
+    Decoder<P> paramDecoder,
+    Encoder<R> resultEncoder,
+    Decoder<R> resultDecoder}) async {
   final receivePort = new ReceivePort();
-  final isolate = await Isolate.spawn(
-      _delegate, new _DelegateParams(task, param, receivePort.sendPort));
+  final dParams = new _DelegateParams<R, P>(task, param, receivePort.sendPort,
+      paramEncoder: paramEncoder,
+      paramDecoder: paramDecoder,
+      resultEncoder: resultEncoder,
+      resultDecoder: resultDecoder);
+  final isolate = await Isolate.spawn(_delegate, dParams.toMap);
 
   final errorReceivePort = new ReceivePort();
   isolate.addErrorListener(errorReceivePort.sendPort);
@@ -32,9 +40,11 @@ Future<R> go<R, P>(Task<R, P> task, P param) async {
   });
 
   try {
-    final R result = await receivePort.first;
+    final rawResult = await receivePort.first;
     isolate.kill();
     errorReceivePort.close();
+    final R result =
+        resultDecoder == null ? rawResult : resultDecoder(rawResult);
     return result;
   } on StateError catch (_) {
     receivePort.close();
