@@ -14,12 +14,12 @@ Stream<int> fib(int n) async* {
 
 main() async {
   final Stream<int> fs = await stream(fib, 50);
-  await for(int f in fs) {
+  await for (int f in fs) {
     print('Result from remote $f');
   }
 
   final StreamTask fibTask = remoteStream(fib);
-  await for(int f in await fibTask(50)) {
+  await for (int f in await fibTask(50)) {
     print('Result from remote $f');
   }
 }

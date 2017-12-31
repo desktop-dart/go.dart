@@ -55,5 +55,5 @@ _delegate<R, P>(Map map) async {
   final params = _DelegateParams.fromMap<R, P>(map);
   final Encoder<R> encoder = params.resultEncoder;
   final R result = await params.task(params.params);
-  params.port.send(encoder == null? result: encoder(result));
+  params.port.send(encoder == null ? result : encoder(result));
 }

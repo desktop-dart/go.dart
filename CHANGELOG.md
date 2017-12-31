@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4
+
++ `go` and `stream` encode and decode result and response
++ `stream` handles exceptions on remote isolate gracefully
+
 ## 1.0.3
 
 + `go` handles exceptions on remote isolates correctly 

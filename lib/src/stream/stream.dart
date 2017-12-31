@@ -62,9 +62,9 @@ Future<Stream<R>> stream<R, P>(StreamTask<R, P> task, P param,
   });
 
   if (resultDecoder == null) {
-    receivePort.pipe(controller);
+    receivePort.listen((d) => controller.add(d));
   } else {
-    receivePort.map((d) => resultDecoder(d)).pipe(controller);
+    receivePort.listen((d) => controller.add(resultDecoder(d)));
   }
 
   return controller.stream;
