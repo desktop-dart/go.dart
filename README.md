@@ -1,5 +1,8 @@
 # go
 
+[![Pub](https://img.shields.io/pub/v/go.svg)](https://pub.dartlang.org/packages/go)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/jaguar_dart/jaguar)
+
 Seamlessly launch isolates to perform side jobs.
 
 # Parallelize a task
