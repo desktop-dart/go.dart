@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
++ `go` handles exceptions on remote isolates correctly 
+
 ## 1.0.2
 
 + `goMany`

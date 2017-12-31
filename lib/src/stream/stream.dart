@@ -40,6 +40,7 @@ Future<Stream<R>> stream<R, P>(StreamTask<R, P> task, P param) async {
   exitReceivePort.first.then((_) {
     receivePort.close();
   });
+  // TODO Watchout for errors
   return result;
 }
 
