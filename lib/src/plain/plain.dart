@@ -8,6 +8,9 @@ part 'delegate.dart';
 /// A one-shot task that takes a parameter [param] and returns result of type [R].
 typedef FutureOr<R> Task<R, P>(P param);
 
+/// A one-shot task that takes a parameter [param] and returns result of type [R].
+typedef FutureOr<R> Task2<R, P1, P2>(P1 param1, P2 param2);
+
 /// Executes [task] on another isolate with given parameter [param] and returns
 /// result of type [R].
 ///
@@ -52,12 +55,6 @@ Future<R> go<R, P>(Task<R, P> task, P param,
     if (error != null) throw error;
     rethrow;
   }
-}
-
-class _ExceptionWrap {
-  dynamic exception;
-
-  _ExceptionWrap(this.exception);
 }
 
 /// Converts [task] to a function that executes [task] on another isolate and

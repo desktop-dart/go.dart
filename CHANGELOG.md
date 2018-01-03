@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
++ `Herd`
+
 ## 1.0.4
 
 + `go` and `stream` encode and decode result and response
