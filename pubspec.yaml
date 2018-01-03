@@ -1,6 +1,6 @@
 name: go
 description: Simplest API to multi process using isolates.
-version: 1.0.5
+version: 1.0.6
 homepage: https://github.com/desktop-dart/go.dart
 author: Ravi Teja Gudapati <tejainece@gmail.com>
 
